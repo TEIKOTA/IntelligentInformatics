@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 import ap25.*;
 
 class MyEval {
-  static float[][] M = {
+  float[][] M = {
       { 10,  10, 10, 10,  10,  10},
       { 10,  -5,  1,  1,  -5,  10},
       { 10,   1,  1,  1,   1,  10},
@@ -19,6 +19,14 @@ class MyEval {
       { 10,  -5,  1,  1,  -5,  10},
       { 10,  10, 10, 10,  10,  10},
   };
+
+  public MyEval(float[][] M){
+    this.M = M;
+  }
+  
+  public MyEval(){
+
+  }
 
   public float value(Board board) {
     if (board.isEnd()) return 1000000 * board.score();
