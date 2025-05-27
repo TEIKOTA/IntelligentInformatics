@@ -1,8 +1,8 @@
 # Compiled class file
 *.class
-.tex
-.log
-.aux
+*.tex
+*.log
+*.aux
 
 
 # Log file
