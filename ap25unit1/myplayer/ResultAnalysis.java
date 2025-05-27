@@ -33,7 +33,7 @@ public class ResultAnalysis {
                 case "MY24":
                 winNum++;
                 break;
-                case "【DRAW】":
+                case "DRAW":
                 drawNum++;
                 break;
             }
