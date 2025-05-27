@@ -1,6 +1,6 @@
 JAVAC=javac
 SRC_DIRS=ap25unit1/ap25 ap25unit1/myplayer
-BIN_DIR=ap25unit1/bin
+BIN_DIR=bin
 
 SOURCES=$(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.java))
 
