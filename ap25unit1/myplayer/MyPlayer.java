@@ -44,16 +44,34 @@ public class MyPlayer extends ap25.Player {
     this(MY_NAME, color, new MyEval(), 2);
   }
 
-  public MyPlayer(String name, Color color, MyEval eval, int depthLimit) {
-    super(name, color);
+  public MyPlayer(Color color, MyEval eval) {
+    super(MY_NAME, color);
     this.eval = eval;
-    this.depthLimit = depthLimit;
+    this.depthLimit = 2;
     this.board = new MyBoard();
+  }
+
+  public MyPlayer(String name, Color color, MyEval eval) {
+    this(name, color, new MyEval(), 2);
   }
 
   public MyPlayer(String name, Color color, int depthLimit) {
     this(name, color, new MyEval(), depthLimit);
   }
+
+  public MyPlayer(Color color, MyEval eval, int depthLimit) {
+    super(MY_NAME, color);
+    this.eval = eval;
+    this.depthLimit = depthLimit;
+    this.board = new MyBoard();
+  }
+
+  public MyPlayer(String name, Color color, MyEval eval, int depthLimit) {
+    super(name, color);
+    this.eval = eval;
+    this.depthLimit = depthLimit;
+    this.board = new MyBoard();
+  } 
 
   public void setBoard(Board board) {
     for (var i = 0; i < LENGTH; i++) {
