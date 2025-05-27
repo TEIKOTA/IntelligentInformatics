@@ -1,5 +1,5 @@
 package myplayer;
-
+//仮想の敵
 import ap25.*;
 import java.util.Random;
 
