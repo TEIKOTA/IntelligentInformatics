@@ -10,21 +10,25 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.*;
 
+// 画面出力なしの分析時用に画面出力は以下を代替して
+// System.out.println() -> info()
+// System.err.println() -> error()
+
 public class MyGame {
   public static void main(String args[]) {
     if(args.length > 0){
-      if(args[0] == "former"){
+      if (args[0].equals("former")) {
         var player1 = new myplayer.MyPlayer(BLACK);
         var player2 = new myplayer.RandomPlayer(WHITE);
         var board = new MyBoard();
-        var game = new MyGame(board, player1, player2);
+        var game = new MyGameForDev(board, player1, player2);
         game.play();
         return;
-      }else if(args[0] == "latter"){
+      } else if (args[0].equals("latter")) {
         var player1 = new myplayer.MyPlayer(WHITE);
         var player2 = new myplayer.RandomPlayer(BLACK);
         var board = new MyBoard();
-        var game = new MyGame(board, player1, player2);
+        var game = new MyGameForDev(board, player1, player2);
         game.play();
         return;
       }
@@ -89,7 +93,7 @@ public class MyGame {
         break;
       }
 
-      System.out.println(board);
+      info(board);
     }
 
     printResult(board, moves);
@@ -97,21 +101,21 @@ public class MyGame {
 
   Move check(Color turn, Move move, Error error) {
     if (move.isError()) {
-      System.err.printf("error: %s %s", turn, error);
-      System.err.println(board);
+      error(String.format("error: %s %s", turn, error));
+      error(board);
       return move;
     }
 
     if (this.times.get(turn) > TIME_LIMIT_SECONDS) {
-      System.err.printf("timeout: %s %.2f", turn, this.times.get(turn));
-      System.err.println(board);
+      error(String.format("timeout: %s %.2f", turn, this.times.get(turn)));
+      error(board);
       return Move.ofTimeout(turn);
     }
 
     var legals = board.findLegalMoves(turn);
     if (move == null || legals.contains(move) == false) {
-      System.err.printf("illegal move: %s %s", turn, move);
-      System.err.println(board);
+      error(String.format("illegal move: %s %s", turn, move));
+      error(board);
       return Move.ofIllegal(turn);
     }
 
@@ -130,10 +134,10 @@ public class MyGame {
     if (score > 0){
       result = String.format("%-4s won by %-2d", getWinner(board), score);
     }else{
-      appendToFile("result.csv", "【DRAW】");
+      appendToFile("result.csv", "DRAW");
     }
     var s = toString() + " -> " + result + "\t| " + toString(moves);
-    System.out.println(s);
+    info(s);
   }
 
   public String toString() {
@@ -156,5 +160,14 @@ public class MyGame {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  /** General output (info-level) */
+  protected void info(Object msg) {
+    System.out.println(msg);
+  }
+  /** Error-level output */
+  protected void error(Object msg) {
+    System.err.println(msg);
   }
 }
