@@ -2,17 +2,40 @@ package myplayer;
 
 import ap25.*;
 import static ap25.Color.*;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.*;
 import java.nio.file.*;
 import java.io.IOException;
 public class MyGame {
   public static void main(String args[]) {
+    if(args.length > 0){
+      if(args[0] == "former"){
+        var player1 = new myplayer.MyPlayer(BLACK);
+        var player2 = new myplayer.RandomPlayer(WHITE);
+        var board = new MyBoard();
+        var game = new MyGame(board, player1, player2);
+        game.play();
+        return;
+      }else if(args[0] == "latter"){
+        var player1 = new myplayer.MyPlayer(WHITE);
+        var player2 = new myplayer.RandomPlayer(BLACK);
+        var board = new MyBoard();
+        var game = new MyGame(board, player1, player2);
+        game.play();
+        return;
+      }
+    }
     var player1 = new myplayer.MyPlayer(BLACK);
     var player2 = new myplayer.MyPlayer(WHITE);
     var board = new MyBoard();
     var game = new MyGame(board, player1, player2);
     game.play();
+    
   }
 
   static final float TIME_LIMIT_SECONDS = 60;
@@ -97,15 +120,19 @@ public class MyGame {
   }
 
   public Player getWinner(Board board) {
-    return this.players.get(board.winner());
+    Player winner = this.players.get(board.winner());
+    appendToFile("result.csv", winner.toString());
+    return winner;
   }
 
   public void printResult(Board board, List<Move> moves) {
     var result = String.format("%5s%-9s", "", "draw");
     var score = Math.abs(board.score());
-    if (score > 0)
+    if (score > 0){
       result = String.format("%-4s won by %-2d", getWinner(board), score);
-
+    }else{
+      appendToFile("result.csv", "【DRAW】");
+    }
     var s = toString() + " -> " + result + "\t| " + toString(moves);
     System.out.println(s);
   }
@@ -118,7 +145,8 @@ public class MyGame {
     return moves.stream().map(x -> x.toString()).collect(Collectors.joining());
   }
 
-    public static void appendToFile(String filename, String text) {
+  //勝敗記録のためだけに追加したメソッド
+  public static void appendToFile(String filename, String text) {
     try {
       Files.write(
         Paths.get(filename),
