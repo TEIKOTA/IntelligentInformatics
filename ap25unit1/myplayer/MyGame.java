@@ -4,7 +4,8 @@ import ap25.*;
 import static ap25.Color.*;
 import java.util.*;
 import java.util.stream.*;
-
+import java.nio.file.*;
+import java.io.IOException;
 public class MyGame {
   public static void main(String args[]) {
     var player1 = new myplayer.MyPlayer(BLACK);
@@ -115,5 +116,18 @@ public class MyGame {
 
   public static String toString(List<Move> moves) {
     return moves.stream().map(x -> x.toString()).collect(Collectors.joining());
+  }
+
+    public static void appendToFile(String filename, String text) {
+    try {
+      Files.write(
+        Paths.get(filename),
+        (text + System.lineSeparator()).getBytes(),
+        StandardOpenOption.CREATE,
+        StandardOpenOption.APPEND
+      );
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
