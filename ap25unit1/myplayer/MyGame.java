@@ -2,6 +2,11 @@ package myplayer;
 
 import ap25.*;
 import static ap25.Color.*;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.*;
 
@@ -114,15 +119,19 @@ public class MyGame {
   }
 
   public Player getWinner(Board board) {
-    return this.players.get(board.winner());
+    Player winner = this.players.get(board.winner());
+    appendToFile("result.csv", winner.toString());
+    return winner;
   }
 
   public void printResult(Board board, List<Move> moves) {
     var result = String.format("%5s%-9s", "", "draw");
     var score = Math.abs(board.score());
-    if (score > 0)
+    if (score > 0){
       result = String.format("%-4s won by %-2d", getWinner(board), score);
-
+    }else{
+      appendToFile("result.csv", "【DRAW】");
+    }
     var s = toString() + " -> " + result + "\t| " + toString(moves);
     System.out.println(s);
   }
@@ -133,5 +142,19 @@ public class MyGame {
 
   public static String toString(List<Move> moves) {
     return moves.stream().map(x -> x.toString()).collect(Collectors.joining());
+  }
+
+  //勝敗記録のためだけに追加したメソッド
+  public static void appendToFile(String filename, String text) {
+    try {
+      Files.write(
+        Paths.get(filename),
+        (text + System.lineSeparator()).getBytes(),
+        StandardOpenOption.CREATE,
+        StandardOpenOption.APPEND
+      );
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 }
