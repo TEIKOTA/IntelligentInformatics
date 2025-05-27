@@ -7,11 +7,29 @@ import java.util.stream.*;
 
 public class MyGame {
   public static void main(String args[]) {
+    if(args.length > 0){
+      if(args[0] == "former"){
+        var player1 = new myplayer.MyPlayer(BLACK);
+        var player2 = new myplayer.RandomPlayer(WHITE);
+        var board = new MyBoard();
+        var game = new MyGame(board, player1, player2);
+        game.play();
+        return;
+      }else if(args[0] == "latter"){
+        var player1 = new myplayer.MyPlayer(WHITE);
+        var player2 = new myplayer.RandomPlayer(BLACK);
+        var board = new MyBoard();
+        var game = new MyGame(board, player1, player2);
+        game.play();
+        return;
+      }
+    }
     var player1 = new myplayer.MyPlayer(BLACK);
     var player2 = new myplayer.RandomPlayer(WHITE);
     var board = new MyBoard();
     var game = new MyGame(board, player1, player2);
     game.play();
+    
   }
 
   static final float TIME_LIMIT_SECONDS = 60;
