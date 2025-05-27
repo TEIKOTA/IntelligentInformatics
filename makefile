@@ -18,3 +18,12 @@ all:
 
 clean:
 	rm -rf $(BIN_DIR)
+
+1c:
+	$(MAKE) all
+	@for i in $(shell seq 1 100); do \
+	    java -cp $(BIN_DIR) myplayer.MyGame former; \
+	done
+	@for i in $(shell seq 1 100); do \
+	    java -cp $(BIN_DIR) myplayer.MyGame latter; \
+	done
