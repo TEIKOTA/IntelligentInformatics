@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Move {
+  //パス,時間切れ,置けない所に置く,エラー発生のペナルティ
   public final static int PASS = -1;
   final static int TIMEOUT = -10;
   final static int ILLEGAL = -20;
@@ -14,7 +15,7 @@ public class Move {
 
   int index;
   Color color;
-
+  //Move.of
   public static Move of(int index, Color color) {
     return new Move(index, color);
   }
@@ -23,18 +24,22 @@ public class Move {
     return new Move(parseIndex(pos), color);
   }
 
+  //Move.ofPass
   public static Move ofPass(Color color) {
     return new Move(PASS, color);
   }
 
+  //Move.ofTimeout
   public static Move ofTimeout(Color color) {
     return new Move(TIMEOUT, color);
   }
 
+  //Move.ofIllegal
   public static Move ofIllegal(Color color) {
     return new Move(ILLEGAL, color);
   }
 
+  //Move.ofError
   public static Move ofError(Color color) {
     return new Move(ERROR, color);
   }
