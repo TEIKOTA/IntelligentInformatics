@@ -16,29 +16,93 @@ import java.util.stream.*;
 
 public class MyGame {
   public static void main(String args[]) {
-    if(args.length > 0){
+    float[][] M2 = {
+        { 10, -3, -3, -3, -3, 10 },
+        { -3, 0, -1, -1, 0, -3 },
+        { -3, -1, -1, -1, -1, -3 },
+        { -3, -1, -1, -1, -1, -3 },
+        { -3, 0, -1, -1, 0, -3 },
+        { 10, -3, -3, -3, -3, 10 },
+    };
+
+    // var game = getMyEvalvsRandGame(M2, args);
+    var game = getMyEvalvsDefault(M2, args);
+    game.play();
+  }
+
+  static MyGame getMyEvalvsRandGame(float[][] M, String[] args) {
+    if (args.length > 0) {
+      if (args[0].equals("former")) {
+        var player1 = new myplayer.MyPlayer(BLACK, new MyEval(M));
+        // var player2 = new myplayer.MyPlayer(WHITE);
+        var player2 = new myplayer.RandomPlayer(WHITE);
+
+        var board = new MyBoard();
+        var game = new MyGameForDev(board, player1, player2);
+        return game;
+      } else if (args[0].equals("latter")) {
+        var player1 = new myplayer.MyPlayer(WHITE, new MyEval(M));
+        // var player2 = new myplayer.MyPlayer(BLACK);
+
+        var player2 = new myplayer.RandomPlayer(BLACK);
+        var board = new MyBoard();
+        var game = new MyGameForDev(board, player1, player2);
+        return game;
+      }
+    }
+    var player1 = new myplayer.MyPlayer(BLACK, new MyEval(M));
+    // var player2 = new myplayer.MyPlayer(WHITE);
+    var player2 = new myplayer.RandomPlayer(WHITE);
+    var board = new MyBoard();
+    var game = new MyGame(board, player1, player2);
+    return game;
+  }
+
+  MyGame getDefaultvsRandGame(String[] args) {
+    if (args.length > 0) {
       if (args[0].equals("former")) {
         var player1 = new myplayer.MyPlayer(BLACK);
         var player2 = new myplayer.RandomPlayer(WHITE);
         var board = new MyBoard();
         var game = new MyGameForDev(board, player1, player2);
-        game.play();
-        return;
+        return game;
       } else if (args[0].equals("latter")) {
         var player1 = new myplayer.MyPlayer(WHITE);
         var player2 = new myplayer.RandomPlayer(BLACK);
         var board = new MyBoard();
         var game = new MyGameForDev(board, player1, player2);
-        game.play();
-        return;
+        return game;
       }
     }
-    var player1 = new myplayer.MyPlayer(BLACK);
+    var player1 = new myplayer.MyPlayer(WHITE);
     var player2 = new myplayer.RandomPlayer(WHITE);
     var board = new MyBoard();
     var game = new MyGame(board, player1, player2);
-    game.play();
-    
+    return game;
+  }
+
+  static MyGame getMyEvalvsDefault(float[][] M, String[] args) {
+    if (args.length > 0) {
+      if (args[0].equals("former")) {
+        var player1 = new myplayer.MyPlayer(BLACK, new MyEval(M));
+        var player2 = new myplayer.MyPlayer(WHITE);
+
+        var board = new MyBoard();
+        var game = new MyGameForDev(board, player1, player2);
+        return game;
+      } else if (args[0].equals("latter")) {
+        var player1 = new myplayer.MyPlayer(WHITE, new MyEval(M));
+        var player2 = new myplayer.MyPlayer(BLACK);
+        var board = new MyBoard();
+        var game = new MyGameForDev(board, player1, player2);
+        return game;
+      }
+    }
+    var player1 = new myplayer.MyPlayer(BLACK, new MyEval(M));
+    var player2 = new myplayer.MyPlayer(WHITE);
+    var board = new MyBoard();
+    var game = new MyGame(board, player1, player2);
+    return game;
   }
 
   static final float TIME_LIMIT_SECONDS = 60;
@@ -131,9 +195,9 @@ public class MyGame {
   public void printResult(Board board, List<Move> moves) {
     var result = String.format("%5s%-9s", "", "draw");
     var score = Math.abs(board.score());
-    if (score > 0){
+    if (score > 0) {
       result = String.format("%-4s won by %-2d", getWinner(board), score);
-    }else{
+    } else {
       appendToFile("result.csv", "DRAW");
     }
     var s = toString() + " -> " + result + "\t| " + toString(moves);
@@ -148,15 +212,14 @@ public class MyGame {
     return moves.stream().map(x -> x.toString()).collect(Collectors.joining());
   }
 
-  //勝敗記録のためだけに追加したメソッド
+  // 勝敗記録のためだけに追加したメソッド
   public static void appendToFile(String filename, String text) {
     try {
       Files.write(
-        Paths.get(filename),
-        (text + System.lineSeparator()).getBytes(),
-        StandardOpenOption.CREATE,
-        StandardOpenOption.APPEND
-      );
+          Paths.get(filename),
+          (text + System.lineSeparator()).getBytes(),
+          StandardOpenOption.CREATE,
+          StandardOpenOption.APPEND);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -166,6 +229,7 @@ public class MyGame {
   protected void info(Object msg) {
     System.out.println(msg);
   }
+
   /** Error-level output */
   protected void error(Object msg) {
     System.err.println(msg);
