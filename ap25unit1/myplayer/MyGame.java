@@ -17,12 +17,12 @@ import java.util.stream.*;
 public class MyGame {
   public static void main(String args[]) {
     float[][] M2 = {
-        { 10, -3, -3, -3, -3, 10 },
-        { -3, 0, -1, -1, 0, -3 },
-        { -3, -1, -1, -1, -1, -3 },
-        { -3, -1, -1, -1, -1, -3 },
-        { -3, 0, -1, -1, 0, -3 },
-        { 10, -3, -3, -3, -3, 10 },
+        { 5, -4, -2, -2, -4, 5 },
+        { -4, -3, -1, -1, -3, -4 },
+        { -2, -1, -1, -1, -1, -2 },
+        { -2, -1, -1, -1, -1, -2 },
+        { -4, -3, -1, -1, -3, -4 },
+        { 5, -4, -2, -2, -4, 5 },
     };
 
     // former を指定すると 先に名前が出てるほうが先手
@@ -36,6 +36,24 @@ public class MyGame {
 
   static MyGame getMyEvalvsRandGame(float[][] M, String[] args) {
     if (args.length > 0) {
+      //Mをargsから更新
+      if(args.length > 1){
+        if(args.length < 1 + 36){
+          System.err.println("Error: Not enough arguments to fill 6x6 matrix M (need 36 values after the first argument).");
+          System.exit(1);
+        }
+        try {
+          for(int r = 0; r < 6; r++){
+            for(int c = 0; c < 6; c++){
+              M[r][c] = Float.parseFloat(args[1 + r*6 + c]);
+            }
+          }
+        } catch(NumberFormatException e){
+          System.err.println("Error: Failed to parse float value for matrix M: " + e.getMessage());
+          System.exit(1);
+        }
+      }
+
       if (args[0].equals("former")) {
         var player1 = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M));
         var player2 = new myplayer.RandomPlayer(WHITE);
