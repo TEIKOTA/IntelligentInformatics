@@ -29,8 +29,12 @@ public class ResultAnalysis {
             switch (col) {
                 case "R":
                     break;
-                case "MY24":
+                case "STATICMOD":
                     winNum++;
+                    break;
+                // defaultとrandom を戦わせるときただけコメントアウト外す
+                case "MY24":
+                    // winNum++;
                     break;
                 case "DRAW":
                     drawNum++;
@@ -38,7 +42,7 @@ public class ResultAnalysis {
             }
         }
         double winRate = (double) winNum / (double) cols.length * 100;
-        System.out.printf("%n player1の 勝率【%.1f％】%n総試合数：%d%n勝利：%d%nドロー：%d%n敗北：%d%n",
+        System.out.printf("%n勝率【%.1f％】%n総試合数：%d%n勝利：%d%nドロー：%d%n敗北：%d%n",
                 winRate, cols.length, winNum, drawNum, cols.length - winNum - drawNum);
 
         try {
