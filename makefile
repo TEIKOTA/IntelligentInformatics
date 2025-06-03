@@ -1,6 +1,7 @@
 JAVAC=javac
 SRC_DIRS=ap25unit1/ap25 ap25unit1/myplayer
-BIN_DIR=ap25unit1/bin
+BIN_DIR=bin
+N?=100
 
 SOURCES=$(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.java))
 
@@ -21,9 +22,10 @@ clean:
 
 1c:
 	$(MAKE) all
-	@for i in $(shell seq 1 100); do \
+	@for i in $(shell seq 1 $(N)); do \
 	    java -cp $(BIN_DIR) myplayer.MyGame former; \
 	done
-	@for i in $(shell seq 1 100); do \
+	@for i in $(shell seq 1 $(N)); do \
 	    java -cp $(BIN_DIR) myplayer.MyGame latter; \
 	done
+	java -cp $(BIN_DIR) myplayer.ResultAnalysis

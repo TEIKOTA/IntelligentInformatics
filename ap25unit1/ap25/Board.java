@@ -1,9 +1,11 @@
 package ap25;
 
 import java.util.List;
-
+/**
+ * 盤面のインターフェース 
+ */
 public interface Board {
-  int SIZE = 6;
+  int SIZE = 6; //6*6の盤面である
   int LENGTH = SIZE * SIZE;
 
   Color get(int k);
