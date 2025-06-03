@@ -29,79 +29,79 @@ public class MyGame {
     // getMyEvalvsDefault なら MyEvalのが先手になる
     // oが黒xが白 黒が先手
     // var game = getDefaultvsRandGame(args);
-    var game = getMyEvalvsRandGame(M2, args);
-    // var game = getMyEvalvsDefault(M2, args);
+    // var game = getMyEvalvsRandGame(M2, args);
+    var game = getMyEvalvsDefault(M2, args);
     game.play();
   }
 
   static MyGame getMyEvalvsRandGame(float[][] M, String[] args) {
     if (args.length > 0) {
       if (args[0].equals("former")) {
-        var player1 = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M));
-        var player2 = new myplayer.RandomPlayer(WHITE);
+        var playerB = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M));
+        var playerW = new myplayer.RandomPlayer(WHITE);
 
         var board = new MyBoard();
-        var game = new MyGameForDev(board, player1, player2);
+        var game = new MyGameForDev(board, playerB, playerW);
         return game;
       } else if (args[0].equals("latter")) {
-        var player1 = new myplayer.MyPlayer("STATICMOD", WHITE, new MyEval(M));
-        var player2 = new myplayer.RandomPlayer(BLACK);
+        var playerW = new myplayer.MyPlayer("STATICMOD", WHITE, new MyEval(M));
+        var playerB = new myplayer.RandomPlayer(BLACK);
         var board = new MyBoard();
-        var game = new MyGameForDev(board, player1, player2);
+        var game = new MyGameForDev(board, playerB, playerW);
         return game;
       }
     }
-    var player1 = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M));
-    var player2 = new myplayer.RandomPlayer(WHITE);
+    var playerB = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M));
+    var playerW = new myplayer.RandomPlayer(WHITE);
     var board = new MyBoard();
-    var game = new MyGame(board, player1, player2);
+    var game = new MyGame(board, playerB, playerW);
     return game;
   }
 
   static MyGame getDefaultvsRandGame(String[] args) {
     if (args.length > 0) {
       if (args[0].equals("former")) {
-        var player1 = new myplayer.MyPlayer(BLACK);
-        var player2 = new myplayer.RandomPlayer(WHITE);
+        var playerB = new myplayer.MyPlayer(BLACK);
+        var playerW = new myplayer.RandomPlayer(WHITE);
         var board = new MyBoard();
-        var game = new MyGameForDev(board, player1, player2);
+        var game = new MyGameForDev(board, playerB, playerW);
         return game;
       } else if (args[0].equals("latter")) {
-        var player1 = new myplayer.MyPlayer(WHITE);
-        var player2 = new myplayer.RandomPlayer(BLACK);
+        var playerW = new myplayer.MyPlayer(WHITE);
+        var playerB = new myplayer.RandomPlayer(BLACK);
         var board = new MyBoard();
-        var game = new MyGameForDev(board, player1, player2);
+        var game = new MyGameForDev(board, playerB, playerW);
         return game;
       }
     }
-    var player1 = new myplayer.MyPlayer(WHITE);
-    var player2 = new myplayer.RandomPlayer(WHITE);
+    var playerB = new myplayer.MyPlayer(BLACK);
+    var playerW = new myplayer.RandomPlayer(WHITE);
     var board = new MyBoard();
-    var game = new MyGame(board, player1, player2);
+    var game = new MyGame(board, playerB, playerW);
     return game;
   }
 
   static MyGame getMyEvalvsDefault(float[][] M, String[] args) {
     if (args.length > 0) {
       if (args[0].equals("former")) {
-        var player1 = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M));
-        var player2 = new myplayer.MyPlayer(WHITE);
+        var playerB = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M));
+        var playerW = new myplayer.MyPlayer(WHITE);
 
         var board = new MyBoard();
-        var game = new MyGameForDev(board, player1, player2);
+        var game = new MyGameForDev(board, playerB, playerW);
         return game;
       } else if (args[0].equals("latter")) {
-        var player1 = new myplayer.MyPlayer("STATICMOD", WHITE, new MyEval(M));
-        var player2 = new myplayer.MyPlayer(BLACK);
+        var playerW = new myplayer.MyPlayer("STATICMOD", WHITE, new MyEval(M));
+        var playerB = new myplayer.MyPlayer(BLACK);
         var board = new MyBoard();
-        var game = new MyGameForDev(board, player1, player2);
+        var game = new MyGameForDev(board, playerB, playerW);
         return game;
       }
     }
-    var player1 = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M));
-    var player2 = new myplayer.MyPlayer(WHITE);
+    var playerB = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M));
+    var playerW = new myplayer.MyPlayer(WHITE);
     var board = new MyBoard();
-    var game = new MyGame(board, player1, player2);
+    var game = new MyGame(board, playerB, playerW);
     return game;
   }
 
