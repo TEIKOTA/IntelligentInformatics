@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 import ap25.*;
 
 class MyEval {
-  static float[][] M = {
+  float[][] M = {
       { 10,  10, 10, 10,  10,  10},
       { 10,  -5,  1,  1,  -5,  10},
       { 10,   1,  1,  1,   1,  10},
@@ -20,6 +20,10 @@ class MyEval {
       { 10,  10, 10, 10,  10,  10},
   };
 
+  MyEval(float[][] M){
+    this.M = M;
+  }
+  MyEval (){}
   public float value(Board board) {
     if (board.isEnd()) return 1000000 * board.score();
 
@@ -33,25 +37,25 @@ class MyEval {
   }
 }
 
-public class MyPlayer extends ap25.Player {
+public class CustomPlayer extends ap25.Player {
   static final String MY_NAME = "MY24";
   MyEval eval;
   int depthLimit;
   Move move;
   MyBoard board;
 
-  public MyPlayer(Color color) {
+  public CustomPlayer(Color color) {
     this(MY_NAME, color, new MyEval(), 2);
   }
 
-  public MyPlayer(String name, Color color, MyEval eval, int depthLimit) {
+  public CustomPlayer(String name, Color color, MyEval eval, int depthLimit) {
     super(name, color);
     this.eval = eval;
     this.depthLimit = depthLimit;
     this.board = new MyBoard();
   }
 
-  public MyPlayer(String name, Color color, int depthLimit) {
+  public CustomPlayer(String name, Color color, int depthLimit) {
     this(name, color, new MyEval(), depthLimit);
   }
 
@@ -81,10 +85,12 @@ public class MyPlayer extends ap25.Player {
     return this.move;
   }
 
-  float maxSearch(Board board, float alpha, float beta, int depth) {//and探索
+  //maxsearchとminsearchは交互に呼ばれる
+
+  float maxSearch(Board board, float alpha, float beta, int depth) {
     if (isTerminal(board, depth)) return this.eval.value(board);
 
-    var moves = board.findLegalMoves(BLACK);
+    var moves = board.findLegalMoves(BLACK);//配置可能な点
     moves = order(moves);
 
     if (depth == 0)
@@ -107,7 +113,9 @@ public class MyPlayer extends ap25.Player {
     return alpha;
   }
 
-  float minSearch(Board board, float alpha, float beta, int depth) {//or探索
+
+  float minSearch(Board board, float alpha, float beta, int depth) {
+    
     if (isTerminal(board, depth)) return this.eval.value(board);
 
     var moves = board.findLegalMoves(WHITE);
@@ -119,10 +127,10 @@ public class MyPlayer extends ap25.Player {
       beta = Math.min(beta, v);
       if (alpha >= beta) break;
     }
-
     return beta;
   }
-
+  
+  
   boolean isTerminal(Board board, int depth) {//探索の終了の判定
     return board.isEnd() || depth > this.depthLimit;
   }

@@ -22,7 +22,7 @@ public class MyGame {
         game.play();
         return;
       }else if(args[0] == "latter"){
-        var player1 = new myplayer.MyPlayer(WHITE);
+        var player1 = new myplayer.CustomPlayer(WHITE);
         var player2 = new myplayer.RandomPlayer(BLACK);
         var board = new MyBoard();
         var game = new MyGame(board, player1, player2);
@@ -30,8 +30,8 @@ public class MyGame {
         return;
       }
     }
-    var player1 = new myplayer.MyPlayer(BLACK);
-    var player2 = new myplayer.MyPlayer(WHITE);
+    var player1 = new myplayer.CustomPlayer(BLACK);
+    var player2 = new myplayer.CustomPlayer(WHITE);
     var board = new MyBoard();
     var game = new MyGame(board, player1, player2);
     game.play();
@@ -67,7 +67,7 @@ public class MyGame {
 
       // play
       try {
-        move = player.think(board.clone()).colored(turn);
+        move = player.think(board.clone()).colored(turn);//cloneで渡す thinkは手を返す
       } catch (Error e) {
         error = e;
         move = Move.ofError(turn);
