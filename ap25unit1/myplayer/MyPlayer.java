@@ -93,9 +93,9 @@ public class MyPlayer extends ap25.Player {
   }
 
   public Move think(Board board) {
-    this.board = this.board.placed(board.getMove());
+    this.board = this.board.placed(board.getMove());//盤面を更新
 
-    if (this.board.findNoPassLegalIndexes(getColor()).size() == 0) {
+    if (this.board.findNoPassLegalIndexes(getColor()).size() == 0) {//自身の色の合法手の数で判定
       this.move = Move.ofPass(getColor());
     } else {
       var newBoard = isBlack() ? this.board.clone() : this.board.flipped();

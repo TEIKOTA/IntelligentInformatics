@@ -13,16 +13,19 @@ import java.util.stream.Stream;
 
 import ap25.*;
 
-public class MyBoard implements Board, Cloneable {
-  Color board[];
+public class MyBoardForDev implements Board, Cloneable {
+  Color board[];//ビットボード使うならいらなそう。。？
   Move move = Move.ofPass(NONE);
-
-  public MyBoard() {
+  long whiteBoard;
+  long blackBoard;
+  long banArea;
+  
+  public MyBoardForDev() {
     this.board = Stream.generate(() -> NONE).limit(LENGTH).toArray(Color[]::new);
     init();
   }
 
-  MyBoard(Color board[], Move move) {
+  MyBoardForDev(Color board[], Move move) {
     this.board = Arrays.copyOf(board, board.length);
     this.move = move;
   }
@@ -37,6 +40,12 @@ public class MyBoard implements Board, Cloneable {
     set(Move.parseIndex("d3"), WHITE);
     set(Move.parseIndex("c4"), WHITE);
   }
+  //禁止エリアありよう
+  void init(long banArea) {
+    init();
+    //禁止エリアの設定
+    //this.banArea = banArea;
+  }
 
   public Color get(int k) { return this.board[k]; }
   public Move getMove() { return this.move; }
@@ -47,18 +56,24 @@ public class MyBoard implements Board, Cloneable {
 
   public void set(int k, Color color) {
     this.board[k] = color;
+    if(color == BLACK) {
+      this.blackBoard |= (1L << k);//or演算で追加
+
+    } else if(color == WHITE) {
+      this.whiteBoard |= (1L << k);
+    }
   }
 
   public boolean equals(Object otherObj) {
-    if (otherObj instanceof MyBoard) {
-      var other = (MyBoard) otherObj;
+    if (otherObj instanceof MyBoardForDev) {
+      var other = (MyBoardForDev) otherObj;
       return Arrays.equals(this.board, other.board);
     }
     return false;
   }
 
   public String toString() {
-    return MyBoardFormatter.format(this);
+    return MyBoardFormatter.format(this);//Myboardformatterの書き換えが必要
   }
 
   public int count(Color color) {
@@ -95,7 +110,7 @@ public class MyBoard implements Board, Cloneable {
     return score;
   }
 
-  Map<Color, Long> countAll() {
+  Map<Color, Long> countAll() {//キーが色、値がlong  
     return Arrays.stream(this.board).collect(
         Collectors.groupingBy(Function.identity(), Collectors.counting()));
   }
@@ -110,11 +125,10 @@ public class MyBoard implements Board, Cloneable {
     if (moves.size() == 0) moves.add(Move.PASS);
     return moves;
   }
-  
-  //盤面を全探索して、パス以外の合法手を探す
+
   List<Integer> findNoPassLegalIndexes(Color color) {
     var moves = new ArrayList<Integer>();
-    for (int k = 0; k < LENGTH; k++) {//盤面を全探索
+    for (int k = 0; k < LENGTH; k++) {
       var c = this.board[k];
       if (c != NONE) continue;
       for (var line : lines(k)) {
@@ -147,7 +161,7 @@ public class MyBoard implements Board, Cloneable {
   }
 
   public MyBoard placed(Move move) {
-    var b = clone();//
+    var b = clone();
     b.move = move;
 
     if (move.isPass() | move.isNone())

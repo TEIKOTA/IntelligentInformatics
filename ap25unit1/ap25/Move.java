@@ -13,7 +13,7 @@ public class Move {
   final static int ILLEGAL = -20;
   final static int ERROR = -30;
 
-  int index;
+  int index;//盤上の位置を表すインデックス  8 * 列 + 行 0～35の値で手を表現している
   Color color;
   //Move.of
   public static Move of(int index, Color color) {

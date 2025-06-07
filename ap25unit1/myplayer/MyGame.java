@@ -113,7 +113,7 @@ public class MyGame {
   Player white;
   Map<Color, Player> players;
   List<Move> moves = new ArrayList<>();
-  Map<Color, Float> times = new HashMap<>(Map.of(BLACK, 0f, WHITE, 0f));
+  Map<Color, Float> times = new HashMap<>(Map.of(BLACK, 0f, WHITE, 0f));// 思考時間のマップ
 
   public MyGame(Board board, Player black, Player white) {
     this.board = board.clone();
@@ -146,7 +146,7 @@ public class MyGame {
       final var t = (float) Math.max(t1 - t0, 1) / 1000.f;
       this.times.compute(turn, (k, v) -> v + t);
 
-      // check
+      // check　ここで、おかしい手の判定
       move = check(turn, move, error);
       moves.add(move);
 
