@@ -26,7 +26,7 @@ public enum Color {
     return this.value;
   }
 
-  //自分が表現するマスに置かれた石をひっくり返すとどうなるか？をあらかじめ渡す
+
   public Color flipped() {
     switch (this) {
     case BLACK: return WHITE;

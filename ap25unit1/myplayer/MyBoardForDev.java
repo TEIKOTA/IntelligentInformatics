@@ -14,24 +14,25 @@ import java.util.stream.Stream;
 import ap25.*;
 
 public class MyBoardForDev implements Board, Cloneable {
-  Color board[];//ビットボード使うならいらなそう。。？
+  //Color board[];//ビットボード使うならいらなそう。。？
   Move move = Move.ofPass(NONE);
   long whiteBoard;
   long blackBoard;
   long banArea;
-  
+  long allzero  = Long.MAX_VALUE << 36;//全部0のビットマスク
   public MyBoardForDev() {
-    this.board = Stream.generate(() -> NONE).limit(LENGTH).toArray(Color[]::new);
+    //this.board = Stream.generate(() -> NONE).limit(LENGTH).toArray(Color[]::new);
     init();
   }
 
-  MyBoardForDev(Color board[], Move move) {
-    this.board = Arrays.copyOf(board, board.length);
+  MyBoardForDev(long white,long black , Move move) {
+    this.whiteBoard = white;
+    this.blackBoard = black;
     this.move = move;
   }
 
-  public MyBoard clone() {
-    return new MyBoard(this.board, this.move);
+  public MyBoardForDev clone() {
+    return new MyBoardForDev(this.whiteBoard,this.blackBoard, this.move);
   }
 
   void init() {
@@ -47,7 +48,7 @@ public class MyBoardForDev implements Board, Cloneable {
     //this.banArea = banArea;
   }
 
-  public Color get(int k) { 
+  public Color get(int k) { //済
     if ((banArea & (1L << k)) != 0) return BLOCK; //禁止エリアならBLOCKを返す
     if ((whiteBoard & (1L << k)) != 0) return WHITE; //白のビットが立っていればWHITEを返す
     if ((blackBoard & (1L << k)) != 0) return BLACK; //黒のビットが立っていればBLACKを返す
@@ -59,8 +60,8 @@ public class MyBoardForDev implements Board, Cloneable {
     return this.move.isNone() ? BLACK : this.move.getColor().flipped();
   }
 
-  public void set(int k, Color color) {
-    this.board[k] = color;//bitboardを使うならいらなそう
+  public void set(int k, Color color) {//済
+    //this.board[k] = color;//bitboardを使うならいらなそう
     if(color == BLACK) {
       this.blackBoard |= (1L << k);//or演算で追加
 
@@ -69,19 +70,15 @@ public class MyBoardForDev implements Board, Cloneable {
     }
   }
 
-  public boolean equals(Object otherObj) {
-    if (otherObj instanceof MyBoardForDev) {
-      var other = (MyBoardForDev) otherObj;
-      return Arrays.equals(this.board, other.board);
-    }
-    return false;
+  public boolean equals(long black,long white) {//済
+    return (this.blackBoard == black)  && (this.whiteBoard == white);
   }
 
   public String toString() {
     return MyBoardFormatter.format(this);//Myboardformatterの書き換えが必要
   }
 
-  public int count(Color color) {
+  public int count(Color color) {//済
     if(color == BLACK) return Long.bitCount(this.blackBoard);
     if(color == WHITE) return Long.bitCount(this.whiteBoard);
     return -1; // NONE or BLOCK
@@ -100,13 +97,18 @@ public class MyBoardForDev implements Board, Cloneable {
     return v > 0 ? BLACK : WHITE;
   }
 
-  public void foul(Color color) {//反則処理
+  public void foul(Color color) {//反則した人の色がcolor
     //反則をした色の色を反転させて、全てのマスをその色にする
     var winner = color.flipped();
-    IntStream.range(0, LENGTH).forEach(k -> this.board[k] = winner);
+    if(winner == BLACK){
+      
+    }else if(winner == WHITE){
+
+    }
+    //IntStream.range(0, LENGTH).forEach(k -> this.board[k] = winner);
   }
 
-  public int score() {
+  public int score() {//済
     var cs = countAll();//csは色ごとのカウントを持つMap
     var bs = cs.getOrDefault(BLACK, 0L);//getOrDefaultはキーが存在しない場合、デフォルト値を返す
     var ws = cs.getOrDefault(WHITE, 0L);
@@ -146,26 +148,27 @@ public class MyBoardForDev implements Board, Cloneable {
   List<Integer> findNoPassLegalIndexes(Color color) {
     var moves = new ArrayList<Integer>();
     for (int k = 0; k < LENGTH; k++) {
-      var c = this.board[k];
-      if (c != NONE) continue;
+      long c =  (whiteBoard | blackBoard) & (1L << k);
+      if (c != 0) continue;
       for (var line : lines(k)) {
         var outflanking = outflanked(line, color);
         if (outflanking.size() > 0) moves.add(k);
       }
     }
+    //outflankingとlinesを修正すればよさそう
     return moves;
   }
 
   List<List<Integer>> lines(int k) {//指定した位置kからの8方向のラインを取得
     var lines = new ArrayList<List<Integer>>();
     for (int dir = 0; dir < 8; dir++) {
-      var line = Move.line(k, dir);
+      var line = Move.line(k, dir); 
       lines.add(line);
     }
     return lines;
   }
 
-  List<Move> outflanked(List<Integer> line, Color color) {//outflankedは挟まれているかどうか
+  List<Move> outflanked(List<Integer> line, Color color) {//
     if (line.size() <= 1) return new ArrayList<Move>();
     var flippables = new ArrayList<Move>();
     for (int k: line) {
@@ -177,7 +180,7 @@ public class MyBoardForDev implements Board, Cloneable {
     return new ArrayList<Move>();
   }
 
-  public MyBoard placed(Move move) {//moveは
+  public MyBoardForDev placed(Move move) {//moveは
     var b = clone();
     b.move = move;
 
@@ -189,7 +192,14 @@ public class MyBoardForDev implements Board, Cloneable {
     var lines = b.lines(k);
     for (var line: lines) {
       for (var p: outflanked(line, color)) {
-        b.board[p.getIndex()] = color;
+        //b.board[p.getIndex()] = color;
+        if(color == BLACK ){
+          blackBoard |= (1L << p.getIndex());
+          whiteBoard |= (0L << p.getIndex());
+        }else if(color == WHITE){
+          blackBoard |= (0L << p.getIndex());
+          whiteBoard |= (1L << p.getIndex());
+        }
       }
     }
     b.set(k, color);
@@ -197,9 +207,11 @@ public class MyBoardForDev implements Board, Cloneable {
     return b;
   }
 
-  public MyBoard flipped() {
+  public MyBoardForDev flipped() {//
     var b = clone();
-    IntStream.range(0, LENGTH).forEach(k -> b.board[k] = b.board[k].flipped());
+    long tmp = b.whiteBoard;
+    b.whiteBoard = b.blackBoard;
+    b.blackBoard = tmp;
     b.move = this.move.flipped();
     return b;
   }

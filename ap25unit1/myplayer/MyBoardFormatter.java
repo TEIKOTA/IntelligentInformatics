@@ -8,7 +8,7 @@ import java.util.Map;
 
 import ap25.*;
 
-public class MyBoardFormatter {
+public class MyBoardFormatter {//boardを読みやすい形にフォーマットしている
   public static String format(MyBoard board) {
     var turn = board.getTurn();
     var move = board.getMove();
