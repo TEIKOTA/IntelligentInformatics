@@ -1,6 +1,5 @@
 package myplayer;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,7 +14,7 @@ public class ResultAnalysis {
         try {
             List<String> lines = Files.readAllLines(Paths.get(filename));
             cols = new String[lines.size()];
-            for(int i = 0;i<lines.size();i++){
+            for (int i = 0; i < lines.size(); i++) {
                 cols[i] = lines.get(i);
             }
         } catch (IOException e) {
@@ -27,24 +26,28 @@ public class ResultAnalysis {
         int drawNum = 0;
 
         for (String col : cols) {
-            switch(col){
+            switch (col) {
                 case "R":
-                break;
+                    break;
+                case "STATICMOD":
+                    winNum++;
+                    break;
+                // defaultとrandom を戦わせるときただけコメントアウト外す
                 case "MY24":
-                winNum++;
-                break;
+                    // winNum++;
+                    break;
                 case "DRAW":
-                drawNum++;
-                break;
+                    drawNum++;
+                    break;
             }
         }
-        double winRate = (double)winNum / (double)cols.length * 100;
+        double winRate = (double) winNum / (double) cols.length * 100;
         System.out.printf("%n勝率【%.1f％】%n総試合数：%d%n勝利：%d%nドロー：%d%n敗北：%d%n",
-        winRate,cols.length,winNum,drawNum,cols.length-winNum-drawNum);
+                winRate, cols.length, winNum, drawNum, cols.length - winNum - drawNum);
 
-        try{
+        try {
             Files.deleteIfExists(Paths.get(filename));
-        }catch(IOException e){
+        } catch (IOException e) {
             System.out.println("ResultAnalysis:エラーだお");
         }
     }
