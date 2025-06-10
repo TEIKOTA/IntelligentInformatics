@@ -6,6 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * -1はパス、
+ * -10は時間切れ、
+ * -20は置けない所に置く、
+ * -30はエラー発生のペナルティを表します。
+ * indexは0から35の値で、8 * 列 + 行の形式で手を表現
+ */
 public class Move {
   //パス,時間切れ,置けない所に置く,エラー発生のペナルティ
   public final static int PASS = -1;
