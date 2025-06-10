@@ -14,6 +14,8 @@ import java.util.stream.Stream;
 import ap25.*;
 
 public class MyBoard implements Board, Cloneable {
+  /*黒用　白用　配置不可マス用　の三つのボードを持つ
+  */
   Color board[];
   Move move = Move.ofPass(NONE);
 
