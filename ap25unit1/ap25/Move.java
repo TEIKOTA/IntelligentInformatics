@@ -112,7 +112,7 @@ public class Move {
 
   public static List<Integer> line(int k, int dir) {
     var line = new ArrayList<Integer>();
-    int col0 = k % SIZE, row0 = k / SIZE;
+    int col0 = k % SIZE, row0 = k / SIZE;//size = 6
 
     for (int dist = 1; dist < SIZE; dist++) {
       var o = offsets(dist)[dir];

@@ -20,6 +20,7 @@ public class MyBoardForDev implements Board, Cloneable {
   long blackBoard;
   long banArea;
   long allzero  = Long.MAX_VALUE << 36;//全部0のビットマスク
+  long monban ; 
   public MyBoardForDev() {
     //this.board = Stream.generate(() -> NONE).limit(LENGTH).toArray(Color[]::new);
     init();
@@ -134,18 +135,19 @@ public class MyBoardForDev implements Board, Cloneable {
     //     Collectors.groupingBy(Function.identity(), Collectors.counting()));//色ごとに総計
   }
 
-  public List<Move> findLegalMoves(Color color) {
+  public List<Move> findLegalMoves(Color color) {//（マスと色）のリスト
+    //findLegalIndexesの修正をして  配置可能なマスだけ1のビットマップをもらうだけでもよさそう
     return findLegalIndexes(color).stream()
         .map(k -> new Move(k, color)).toList();
   }
 
-  List<Integer> findLegalIndexes(Color color) {
+  List<Integer> findLegalIndexes(Color color) {//おける位置のインデックス
     var moves = findNoPassLegalIndexes(color);
     if (moves.size() == 0) moves.add(Move.PASS);
     return moves;
   }
 
-  List<Integer> findNoPassLegalIndexes(Color color) {
+  List<Integer> findNoPassLegalIndexes(Color color) {//挟めるインデックスの探索
     var moves = new ArrayList<Integer>();
     for (int k = 0; k < LENGTH; k++) {
       long c =  (whiteBoard | blackBoard) & (1L << k);
@@ -160,9 +162,9 @@ public class MyBoardForDev implements Board, Cloneable {
   }
 
   List<List<Integer>> lines(int k) {//指定した位置kからの8方向のラインを取得
-    var lines = new ArrayList<List<Integer>>();
+    var lines = new ArrayList<List<Integer>>();//0から7の配列
     for (int dir = 0; dir < 8; dir++) {
-      var line = Move.line(k, dir); 
+      var line = Move.line(k, dir);   
       lines.add(line);
     }
     return lines;
@@ -172,7 +174,7 @@ public class MyBoardForDev implements Board, Cloneable {
     if (line.size() <= 1) return new ArrayList<Move>();
     var flippables = new ArrayList<Move>();
     for (int k: line) {
-      var c = get(k);
+      var c = get(k);//色の取得
       if (c == NONE || c == BLOCK) break;
       if (c == color) return flippables;
       flippables.add(new Move(k, color));
