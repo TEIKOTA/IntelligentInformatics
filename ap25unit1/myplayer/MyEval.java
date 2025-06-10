@@ -1,4 +1,4 @@
-package ap25unit1.myplayer;
+package myplayer;
 
 import static ap25.Board.*;
 

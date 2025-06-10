@@ -134,13 +134,15 @@ public class MyPlayer extends ap25.Player {
     return shuffled;
   }
 
-    List<Move> orderWhenMax(Board board, float alpha, float beta,List<Move> moves) {
+    //浅い探索を行いその結果を元に並べ替え
+
+  List<Move> orderWhenMax(Board board, float alpha, float beta,List<Move> moves) {
     //maxSearchの効果が期待される順（めっちゃ枝切り）
     var ordered = new ArrayList<Move>(moves);
     return ordered;
   }
 
-    List<Move> orderWhenMin(Board board, float alpha, float beta,List<Move> moves) {
+  List<Move> orderWhenMin(Board board, float alpha, float beta,List<Move> moves) {
     //minSearchの効果が期待される順（めっちゃ枝切り）
     var ordered = new ArrayList<Move>(moves);
     return ordered;
