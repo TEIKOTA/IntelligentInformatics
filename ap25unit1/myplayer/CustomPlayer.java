@@ -12,29 +12,24 @@ import ap25.*;
 
 class MyEval {
   float[][] M = {
-      { 10, 10, 10, 10, 10, 10 },
-      { 10, -5, 1, 1, -5, 10 },
-      { 10, 1, 1, 1, 1, 10 },
-      { 10, 1, 1, 1, 1, 10 },
-      { 10, -5, 1, 1, -5, 10 },
-      { 10, 10, 10, 10, 10, 10 },
+      { 10,  10, 10, 10,  10,  10},
+      { 10,  -5,  1,  1,  -5,  10},
+      { 10,   1,  1,  1,   1,  10},
+      { 10,   1,  1,  1,   1,  10},
+      { 10,  -5,  1,  1,  -5,  10},
+      { 10,  10, 10, 10,  10,  10},
   };
 
-  public MyEval(float[][] M) {
+  MyEval(float[][] M){
     this.M = M;
   }
-
-  public MyEval() {
-
-  }
-
+  MyEval (){}
   public float value(Board board) {
-    if (board.isEnd())
-      return 1000000 * board.score();
+    if (board.isEnd()) return 1000000 * board.score();
 
     return (float) IntStream.range(0, LENGTH)
-        .mapToDouble(k -> score(board, k))
-        .reduce(Double::sum).orElse(0);
+      .mapToDouble(k -> score(board, k))
+      .reduce(Double::sum).orElse(0);
   }
 
   float score(Board board, int k) {
@@ -42,44 +37,26 @@ class MyEval {
   }
 }
 
-public class MyPlayer extends ap25.Player {
+public class CustomPlayer extends ap25.Player {
   static final String MY_NAME = "MY24";
   MyEval eval;
   int depthLimit;
   Move move;
   MyBoard board;
 
-  public MyPlayer(Color color) {
+  public CustomPlayer(Color color) {
     this(MY_NAME, color, new MyEval(), 2);
   }
 
-  public MyPlayer(Color color, MyEval eval) {
-    super(MY_NAME, color);
-    this.eval = eval;
-    this.depthLimit = 2;
-    this.board = new MyBoard();
-  }
-
-  public MyPlayer(String name, Color color, MyEval eval) {
-    this(name, color, new MyEval(), 2);
-  }
-
-  public MyPlayer(String name, Color color, int depthLimit) {
-    this(name, color, new MyEval(), depthLimit);
-  }
-
-  public MyPlayer(Color color, MyEval eval, int depthLimit) {
-    super(MY_NAME, color);
-    this.eval = eval;
-    this.depthLimit = depthLimit;
-    this.board = new MyBoard();
-  }
-
-  public MyPlayer(String name, Color color, MyEval eval, int depthLimit) {
+  public CustomPlayer(String name, Color color, MyEval eval, int depthLimit) {
     super(name, color);
     this.eval = eval;
     this.depthLimit = depthLimit;
     this.board = new MyBoard();
+  }
+
+  public CustomPlayer(String name, Color color, int depthLimit) {
+    this(name, color, new MyEval(), depthLimit);
   }
 
   public void setBoard(Board board) {
@@ -88,14 +65,12 @@ public class MyPlayer extends ap25.Player {
     }
   }
 
-  boolean isBlack() {
-    return getColor() == BLACK;
-  }
+  boolean isBlack() { return getColor() == BLACK; }
 
   public Move think(Board board) {
-    this.board = this.board.placed(board.getMove());//盤面を更新
+    this.board = this.board.placed(board.getMove());
 
-    if (this.board.findNoPassLegalIndexes(getColor()).size() == 0) {//自身の色の合法手の数で判定
+    if (this.board.findNoPassLegalIndexes(getColor()).size() == 0) {
       this.move = Move.ofPass(getColor());
     } else {
       var newBoard = isBlack() ? this.board.clone() : this.board.flipped();
@@ -110,17 +85,18 @@ public class MyPlayer extends ap25.Player {
     return this.move;
   }
 
-  float maxSearch(Board board, float alpha, float beta, int depth) {
-    if (isTerminal(board, depth))
-      return this.eval.value(board);
+  //maxsearchとminsearchは交互に呼ばれる
 
-    var moves = board.findLegalMoves(BLACK);
+  float maxSearch(Board board, float alpha, float beta, int depth) {
+    if (isTerminal(board, depth)) return this.eval.value(board);
+
+    var moves = board.findLegalMoves(BLACK);//配置可能な点
     moves = order(moves);
 
     if (depth == 0)
       this.move = moves.get(0);
 
-    for (var move : moves) {
+    for (var move: moves) {
       var newBoard = board.placed(move);
       float v = minSearch(newBoard, alpha, beta, depth + 1);
 
@@ -137,24 +113,24 @@ public class MyPlayer extends ap25.Player {
     return alpha;
   }
 
+
   float minSearch(Board board, float alpha, float beta, int depth) {
-    if (isTerminal(board, depth))
-      return this.eval.value(board);
+    
+    if (isTerminal(board, depth)) return this.eval.value(board);
 
     var moves = board.findLegalMoves(WHITE);
     moves = order(moves);
 
-    for (var move : moves) {
+    for (var move: moves) {
       var newBoard = board.placed(move);
       float v = maxSearch(newBoard, alpha, beta, depth + 1);
       beta = Math.min(beta, v);
-      if (alpha >= beta)
-        break;
+      if (alpha >= beta) break;
     }
-
     return beta;
   }
-
+  
+  
   boolean isTerminal(Board board, int depth) {//探索の終了の判定
     return board.isEnd() || depth > this.depthLimit;
   }
