@@ -9,7 +9,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.stream.*;
-
+import java.nio.file.*;
+import java.io.IOException;
 // 画面出力なしの分析時用に画面出力は以下を代替して
 // System.out.println() -> info()
 // System.err.println() -> error()
@@ -130,7 +131,7 @@ public class MyGame {
   Player white;
   Map<Color, Player> players;
   List<Move> moves = new ArrayList<>();
-  Map<Color, Float> times = new HashMap<>(Map.of(BLACK, 0f, WHITE, 0f));
+  Map<Color, Float> times = new HashMap<>(Map.of(BLACK, 0f, WHITE, 0f));// 思考時間のマップ
 
   public MyGame(Board board, Player black, Player white) {
     this.board = board.clone();
@@ -152,7 +153,7 @@ public class MyGame {
 
       // play
       try {
-        move = player.think(board.clone()).colored(turn);
+        move = player.think(board.clone()).colored(turn);//cloneで渡す thinkは手を返す
       } catch (Error e) {
         error = e;
         move = Move.ofError(turn);
@@ -163,7 +164,7 @@ public class MyGame {
       final var t = (float) Math.max(t1 - t0, 1) / 1000.f;
       this.times.compute(turn, (k, v) -> v + t);
 
-      // check
+      // check　ここで、おかしい手の判定
       move = check(turn, move, error);
       moves.add(move);
 
