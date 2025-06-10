@@ -38,7 +38,7 @@ public class MyGame {
   static MyGame getMyEvalvsRandGame(float[][] M, String[] args) {
     if (args.length > 0) {
       //Mをargsから更新
-      if(args.length > 1){
+      if(args.length > 2){
         if(args.length < 1 + 36){
           System.err.println("Error: Not enough arguments to fill 6x6 matrix M (need 36 values after the first argument).");
           System.exit(1);
@@ -56,14 +56,14 @@ public class MyGame {
       }
 
       if (args[0].equals("former")) {
-        var player1 = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M));
+        var player1 = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M),Integer.parseInt(args[1]));
         var player2 = new myplayer.RandomPlayer(WHITE);
 
         var board = new MyBoard();
         var game = new MyGameForDev(board, player1, player2);
         return game;
       } else if (args[0].equals("latter")) {
-        var player1 = new myplayer.MyPlayer("STATICMOD", WHITE, new MyEval(M));
+        var player1 = new myplayer.MyPlayer("STATICMOD", WHITE, new MyEval(M),Integer.parseInt(args[1]));
         var player2 = new myplayer.RandomPlayer(BLACK);
         var board = new MyBoard();
         var game = new MyGameForDev(board, player1, player2);

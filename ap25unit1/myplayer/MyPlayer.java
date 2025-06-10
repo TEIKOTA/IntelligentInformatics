@@ -128,8 +128,21 @@ public class MyPlayer extends ap25.Player {
   }
 
   List<Move> order(List<Move> moves) {
+
     var shuffled = new ArrayList<Move>(moves);
     Collections.shuffle(shuffled);
     return shuffled;
+  }
+
+    List<Move> orderWhenMax(Board board, float alpha, float beta,List<Move> moves) {
+    //maxSearchの効果が期待される順（めっちゃ枝切り）
+    var ordered = new ArrayList<Move>(moves);
+    return ordered;
+  }
+
+    List<Move> orderWhenMin(Board board, float alpha, float beta,List<Move> moves) {
+    //minSearchの効果が期待される順（めっちゃ枝切り）
+    var ordered = new ArrayList<Move>(moves);
+    return ordered;
   }
 }

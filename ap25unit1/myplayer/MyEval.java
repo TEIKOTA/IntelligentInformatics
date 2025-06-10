@@ -1,4 +1,4 @@
-package myplayer;
+package ap25unit1.myplayer;
 
 import static ap25.Board.*;
 
@@ -13,6 +13,7 @@ import java.util.stream.IntStream;
 import ap25.*;
 
 public class MyEval {
+
   float[][] M = {
       { 10, 10, 10, 10, 10, 10 },
       { 10, -5, 1, 1, -5, 10 },

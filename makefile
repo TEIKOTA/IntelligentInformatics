@@ -2,7 +2,7 @@ JAVAC=javac
 SRC_DIRS=ap25unit1/ap25 ap25unit1/myplayer
 BIN_DIR=bin
 N?=100
-
+DEPTH?=2
 SOURCES=$(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.java))
 
 test: all
@@ -24,11 +24,11 @@ clean:
 	$(MAKE) all
 	# 先手の${N}回
 	@for i in $(shell seq 1 $(N)); do \
-	    java -cp $(BIN_DIR) myplayer.MyGame former; \
+	    java -cp $(BIN_DIR) myplayer.MyGame former ${DEPTH}; \
 	done
 	java -cp $(BIN_DIR) myplayer.ResultAnalysis
 	# 後手の${N}回
 	@for i in $(shell seq 1 $(N)); do \
-	    java -cp $(BIN_DIR) myplayer.MyGame latter; \
+	    java -cp $(BIN_DIR) myplayer.MyGame latter ${DEPTH}; \
 	done
 	java -cp $(BIN_DIR) myplayer.ResultAnalysis
