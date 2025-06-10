@@ -56,17 +56,17 @@ public class MyGame {
       }
 
       if (args[0].equals("former")) {
-        var player1 = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M),Integer.parseInt(args[1]));
-        var player2 = new myplayer.RandomPlayer(WHITE);
+        var playerB = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M),Integer.parseInt(args[1]));
+        var playerW = new myplayer.RandomPlayer(WHITE);
 
         var board = new MyBoard();
-        var game = new MyGameForDev(board, player1, player2);
+        var game = new MyGameForDev(board, playerB, playerW);
         return game;
       } else if (args[0].equals("latter")) {
-        var player1 = new myplayer.MyPlayer("STATICMOD", WHITE, new MyEval(M),Integer.parseInt(args[1]));
-        var player2 = new myplayer.RandomPlayer(BLACK);
+        var playerW = new myplayer.MyPlayer("STATICMOD", WHITE, new MyEval(M),Integer.parseInt(args[1]));
+        var playerB = new myplayer.RandomPlayer(BLACK);
         var board = new MyBoard();
-        var game = new MyGameForDev(board, player1, player2);
+        var game = new MyGameForDev(board, playerB, playerW);
         return game;
       }
     }
