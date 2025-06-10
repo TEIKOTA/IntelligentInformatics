@@ -20,7 +20,7 @@ public class MyBoardForDev implements Board, Cloneable {
   long blackBoard;
   long banArea;
   long allzero  = Long.MAX_VALUE << 36;//全部0のビットマスク
-  long monban ; 
+  long monbanLR = 0x79E79E79EL; //端にLつけないといけなかった.....
   public MyBoardForDev() {
     //this.board = Stream.generate(() -> NONE).limit(LENGTH).toArray(Color[]::new);
     init();
@@ -141,9 +141,25 @@ public class MyBoardForDev implements Board, Cloneable {
         .map(k -> new Move(k, color)).toList();
   }
 
-  List<Integer> findLegalIndexes(Color color) {//おける位置のインデックス
-    var moves = findNoPassLegalIndexes(color);
-    if (moves.size() == 0) moves.add(Move.PASS);
+  // List<Integer> findLegalIndexes(Color color) {//おける位置のインデックス
+  //   var moves = findNoPassLegalIndexes(color);
+  //   if (moves.size() == 0) moves.add(Move.PASS);
+  //   return moves;
+  // }
+
+  List<Integer> findLegalIndexes(Color color){
+    var moves = new ArrayList<Integer>(); 
+    long afterMonban;//門番と演算した後の相手
+    long tmp;
+    if(color == BLACK){
+      afterMonban = whiteBoard & monbanLR;
+      tmp = monbanLR & blackBoard;
+    }else{
+      afterMonban = blackBoard & monbanLR;
+          tmp = monbanLR & whiteBoard;
+    }
+
+ 
     return moves;
   }
 
