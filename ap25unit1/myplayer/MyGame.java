@@ -17,14 +17,24 @@ import java.io.IOException;
 
 public class MyGame {
   public static void main(String args[]) {
-    float[][] M2 = {
-        { 5, -4, -2, -2, -4, 5 },
-        { -4, -3, -1, -1, -3, -4 },
-        { -2, -1, -1, -1, -1, -2 },
-        { -2, -1, -1, -1, -1, -2 },
-        { -4, -3, -1, -1, -3, -4 },
-        { 5, -4, -2, -2, -4, 5 },
-    };
+    float[][] M2 = 
+    // {
+    //     { 5, -4, -2, -2, -4, 5 },
+    //     { -4, -3, -1, -1, -3, -4 },
+    //     { -2, -1, -1, -1, -1, -2 },
+    //     { -2, -1, -1, -1, -1, -2 },
+    //     { -4, -3, -1, -1, -3, -4 },
+    //     { 5, -4, -2, -2, -4, 5 },
+    // };
+
+    {
+      { 10, 10, 10, 10, 10, 10 },
+      { 10, -5, 1, 1, -5, 10 },
+      { 10, 1, 1, 1, 1, 10 },
+      { 10, 1, 1, 1, 1, 10 },
+      { 10, -5, 1, 1, -5, 10 },
+      { 10, 10, 10, 10, 10, 10 },
+  };
 
     // former を指定すると 先に名前が出てるほうが先手
     // getMyEvalvsDefault なら MyEvalのが先手になる
@@ -32,6 +42,7 @@ public class MyGame {
     // var game = getDefaultvsRandGame(args);
     //var game = getMyEvalvsRandGame(M2, args);
     var game = getMyEvalvsDefault(M2, args);
+    //var game = getMyEvalvsSelf(M2, args);
     game.play();
   }
 
@@ -103,22 +114,46 @@ public class MyGame {
   static MyGame getMyEvalvsDefault(float[][] M, String[] args) {
     if (args.length > 0) {
       if (args[0].equals("former")) {
-        var playerB = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M));
+        var playerB = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M),Integer.parseInt(args[1]));
         var playerW = new myplayer.MyPlayer(WHITE);
 
         var board = new MyBoard();
         var game = new MyGameForDev(board, playerB, playerW);
         return game;
       } else if (args[0].equals("latter")) {
-        var playerW = new myplayer.MyPlayer("STATICMOD", WHITE, new MyEval(M));
+        var playerW = new myplayer.MyPlayer("STATICMOD", WHITE, new MyEval(M),Integer.parseInt(args[1]));
         var playerB = new myplayer.MyPlayer(BLACK);
         var board = new MyBoard();
         var game = new MyGameForDev(board, playerB, playerW);
         return game;
       }
     }
-    var playerB = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M));
+    var playerB = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M),Integer.parseInt(args[1]));
     var playerW = new myplayer.MyPlayer(WHITE);
+    var board = new MyBoard();
+    var game = new MyGame(board, playerB, playerW);
+    return game;
+  }
+
+  static MyGame getMyEvalvsSelf(float[][] M, String[] args) {
+    if (args.length > 0) {
+      if (args[0].equals("former")) {
+        var playerB = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M),Integer.parseInt(args[1]));
+        var playerW = new myplayer.MyPlayer("MY24", WHITE, new MyEval(M),Integer.parseInt(args[1]));
+
+        var board = new MyBoard();
+        var game = new MyGameForDev(board, playerB, playerW);
+        return game;
+      } else if (args[0].equals("latter")) {
+        var playerW = new myplayer.MyPlayer("STATICMOD", WHITE, new MyEval(M),Integer.parseInt(args[1]));
+        var playerB = new myplayer.MyPlayer("MY24", BLACK, new MyEval(M),Integer.parseInt(args[1]));
+        var board = new MyBoard();
+        var game = new MyGameForDev(board, playerB, playerW);
+        return game;
+      }
+    }
+    var playerB = new myplayer.MyPlayer("STATICMOD", BLACK, new MyEval(M),Integer.parseInt(args[1]));
+    var playerW = new myplayer.MyPlayer("MY24", WHITE, new MyEval(M),Integer.parseInt(args[1]));
     var board = new MyBoard();
     var game = new MyGame(board, playerB, playerW);
     return game;
