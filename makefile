@@ -25,10 +25,14 @@ clean:
 	# 先手の${N}回
 	@for i in $(shell seq 1 $(N)); do \
 	    java -cp $(BIN_DIR) myplayer.MyGame former ${DEPTH}; \
-	done
+		printf "▇"; \
+	done; \
+	printf "\n"; \
 	java -cp $(BIN_DIR) myplayer.ResultAnalysis
 	# 後手の${N}回
 	@for i in $(shell seq 1 $(N)); do \
 	    java -cp $(BIN_DIR) myplayer.MyGame latter ${DEPTH}; \
-	done
+		printf "▇"; \
+	done; \
+	printf "\n"; \
 	java -cp $(BIN_DIR) myplayer.ResultAnalysis

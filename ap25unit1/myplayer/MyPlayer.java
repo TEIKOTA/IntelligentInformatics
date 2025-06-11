@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.Comparator;
+import java.util.stream.Collectors;
 
 import ap25.*;
 
@@ -83,7 +85,7 @@ public class MyPlayer extends ap25.Player {
       return this.eval.value(board);
 
     var moves = board.findLegalMoves(BLACK);
-    moves = order(moves);
+    moves = orderWhenMax(board, moves);
 
     if (depth == 0)
       this.move = moves.get(0);
@@ -110,7 +112,7 @@ public class MyPlayer extends ap25.Player {
       return this.eval.value(board);
 
     var moves = board.findLegalMoves(WHITE);
-    moves = order(moves);
+    moves = orderWhenMin(board, moves);
 
     for (var move : moves) {
       var newBoard = board.placed(move);
@@ -134,15 +136,51 @@ public class MyPlayer extends ap25.Player {
     return shuffled;
   }
 
-    List<Move> orderWhenMax(Board board, float alpha, float beta,List<Move> moves) {
-    //maxSearchの効果が期待される順（めっちゃ枝切り）
-    var ordered = new ArrayList<Move>(moves);
-    return ordered;
+  //浅い探索を行いその結果を元に並べ替え
+
+/**
+ * 自分のターン（maxノード）：
+ * 1手進めたあとの評価値が高い順に並べ替え
+ */
+  List<Move> orderWhenMax(Board board, List<Move> moves) {
+  return moves.stream()
+    .map(move -> {
+      Board next = board.placed(move);
+      float raw = eval.value(next);
+      float score = (board.getTurn() == Color.BLACK) ? raw : -raw;
+      return new MoveScore(move, score);
+    })
+    // 降順
+    .sorted(Comparator.comparingDouble(ms -> -ms.score))
+    .map(ms -> ms.move)
+    .toList();
+  }
+/**
+ * 相手のターン（minノード）：
+ * 1手進めたあとの評価値が低い順に並べ替え
+ */
+  List<Move> orderWhenMin(Board board, List<Move> moves) {
+    return moves.stream()
+      .map(move -> {
+        Board next = board.placed(move);
+        float raw = eval.value(next);
+        float score = (board.getTurn() == Color.BLACK) ? raw : -raw;
+        return new MoveScore(move, score);
+      })
+      // 降順（白は評価値小さいほうを選ぶ）→変更：降順に
+      .sorted(Comparator.comparingDouble(ms -> -ms.score))
+      .map(ms -> ms.move)
+      .toList();
   }
 
-    List<Move> orderWhenMin(Board board, float alpha, float beta,List<Move> moves) {
-    //minSearchの効果が期待される順（めっちゃ枝切り）
-    var ordered = new ArrayList<Move>(moves);
-    return ordered;
+  //move orderで使う
+  //手とその際のスコアを保持
+  static class MoveScore {
+    final Move move;
+    final float score;
+    MoveScore(Move move, float score) {
+      this.move = move;
+      this.score = score;
+    }
   }
 }
