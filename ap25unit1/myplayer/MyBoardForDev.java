@@ -170,45 +170,51 @@ public class MyBoardForDev implements Board, Cloneable {
     tmp |= monban & (tmp >> 1);
     tmp |= monban & (tmp >> 1);
     result = emptyArea & (tmp>>1);
-   
+    
+    monban = UDwatchmask & (color == BLACK ? whiteBoard<<1 : blackBoard<<1);
     tmp |= monban & (tmp << 1);
     tmp |= monban & (tmp << 1);
     tmp |= monban & (tmp << 1);
     result |= emptyArea & (tmp << 1);
+
     //縦の探索
-    monban = UDwatchmask & (color == BLACK ? whiteBoard>>1 : blackBoard>>1);
+    monban = UDwatchmask & (color == BLACK ? whiteBoard<<6 : blackBoard<<6);
     tmp |= monban & (tmp << 6);
     tmp |= monban & (tmp << 6);
     tmp |= monban & (tmp << 6);
     result |= emptyArea & (tmp << 6);
     
+    monban = UDwatchmask & (color == BLACK ? whiteBoard >>6 : blackBoard>>6);   
     tmp |= monban & (tmp >> 6);
     tmp |= monban & (tmp >> 6);
     tmp |= monban & (tmp >> 6);
     result |= emptyArea & (tmp >> 6);
 
     //斜めの探索
-    monban = diag1watchmask & (color == BLACK ? whiteBoard>>1 : blackBoard>>1);
+    monban = diag1watchmask & (color == BLACK ? whiteBoard>>7 : blackBoard>>7);
     tmp |= monban & (tmp >> 7);
     tmp |= monban & (tmp >> 7);
     tmp |= monban & (tmp >> 7);
     result |= emptyArea & (tmp >> 7);
-
+    
+    monban = UDwatchmask & (color == BLACK ? whiteBoard>>5 : blackBoard>>5);
     tmp |= monban & (tmp >> 5);
     tmp |= monban & (tmp >> 5);
     tmp |= monban & (tmp >> 5);
     result |= emptyArea & (tmp >> 5);
-
+    
+    monban = UDwatchmask & (color == BLACK ? whiteBoard<<5 : blackBoard<<5);
     tmp |= monban & (tmp << 5);
     tmp |= monban & (tmp << 5);
     tmp |= monban & (tmp << 5);
     result |= emptyArea & (tmp << 5);
 
+    monban = UDwatchmask & (color == BLACK ? whiteBoard <<7 : blackBoard<<7);
     tmp |= monban & (tmp << 7);
     tmp |= monban & (tmp << 7);
     tmp |= monban & (tmp << 7);
     result |= emptyArea & (tmp << 7);
-    
+
     while (tmp != 0) {
       int k = Long.numberOfTrailingZeros(tmp);
       moves.add(k);
