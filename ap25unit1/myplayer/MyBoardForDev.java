@@ -20,7 +20,6 @@ public class MyBoardForDev implements Board, Cloneable {
   long blackBoard;
   long banArea;
   long allzero  = Long.MAX_VALUE << 36;//全部0のビットマスク
-  long monbanLR = 0x79E79E79EL; //端にLつけないといけなかった.....
   public MyBoardForDev() {
     //this.board = Stream.generate(() -> NONE).limit(LENGTH).toArray(Color[]::new);
     init();
@@ -149,17 +148,72 @@ public class MyBoardForDev implements Board, Cloneable {
 
   List<Integer> findLegalIndexes(Color color){
     var moves = new ArrayList<Integer>(); 
-    long afterMonban;//門番と演算した後の相手
+    long LRwatchmask = 0x79E79E79EL; //端にLつけないといけなかった.....
+    long UDwatchmask = 0x3FFFFFC0L; //上下のマスク
+    long diag1watchmask = 0x1E79E780L; //左上から右下の斜めのマスク
+
+    long monban;
     long tmp;
+    long emptyArea = ~(whiteBoard | blackBoard | banArea);//何もないエリア
+    long result;
     if(color == BLACK){
-      afterMonban = whiteBoard & monbanLR;
-      tmp = monbanLR & blackBoard;
+      monban = LRwatchmask & whiteBoard;
+      tmp = LRwatchmask & (blackBoard>>1);
     }else{
-      afterMonban = blackBoard & monbanLR;
-          tmp = monbanLR & whiteBoard;
+      monban = LRwatchmask & blackBoard;
+      tmp = whiteBoard;  
     }
 
- 
+    //横の探索
+    monban = LRwatchmask & (color == BLACK ? (whiteBoard>>1) : (blackBoard>>1));
+    tmp |= monban & (tmp >> 1);
+    tmp |= monban & (tmp >> 1);
+    tmp |= monban & (tmp >> 1);
+    result = emptyArea & (tmp>>1);
+   
+    tmp |= monban & (tmp << 1);
+    tmp |= monban & (tmp << 1);
+    tmp |= monban & (tmp << 1);
+    result |= emptyArea & (tmp << 1);
+    //縦の探索
+    monban = UDwatchmask & (color == BLACK ? whiteBoard>>1 : blackBoard>>1);
+    tmp |= monban & (tmp << 6);
+    tmp |= monban & (tmp << 6);
+    tmp |= monban & (tmp << 6);
+    result |= emptyArea & (tmp << 6);
+    
+    tmp |= monban & (tmp >> 6);
+    tmp |= monban & (tmp >> 6);
+    tmp |= monban & (tmp >> 6);
+    result |= emptyArea & (tmp >> 6);
+
+    //斜めの探索
+    monban = diag1watchmask & (color == BLACK ? whiteBoard>>1 : blackBoard>>1);
+    tmp |= monban & (tmp >> 7);
+    tmp |= monban & (tmp >> 7);
+    tmp |= monban & (tmp >> 7);
+    result |= emptyArea & (tmp >> 7);
+
+    tmp |= monban & (tmp >> 5);
+    tmp |= monban & (tmp >> 5);
+    tmp |= monban & (tmp >> 5);
+    result |= emptyArea & (tmp >> 5);
+
+    tmp |= monban & (tmp << 5);
+    tmp |= monban & (tmp << 5);
+    tmp |= monban & (tmp << 5);
+    result |= emptyArea & (tmp << 5);
+
+    tmp |= monban & (tmp << 7);
+    tmp |= monban & (tmp << 7);
+    tmp |= monban & (tmp << 7);
+    result |= emptyArea & (tmp << 7);
+    
+    while (tmp != 0) {
+      int k = Long.numberOfTrailingZeros(tmp);
+      moves.add(k);
+      tmp &= ~(1L << k); // kのビットを0にする
+    }
     return moves;
   }
 
