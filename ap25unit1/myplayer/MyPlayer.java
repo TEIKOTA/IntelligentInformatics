@@ -167,8 +167,8 @@ public class MyPlayer extends ap25.Player {
         float score = (board.getTurn() == Color.BLACK) ? raw : -raw;
         return new MoveScore(move, score);
       })
-      // 降順（白は評価値小さいほうを選ぶ）→変更：降順に
-      .sorted(Comparator.comparingDouble(ms -> -ms.score))
+      // 昇順
+      .sorted(Comparator.comparingDouble(ms -> ms.score))
       .map(ms -> ms.move)
       .toList();
   }
